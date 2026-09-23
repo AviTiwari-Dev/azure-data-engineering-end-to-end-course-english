@@ -208,3 +208,102 @@ SELECT DATENAME(YYYY, GETDATE());
 SELECT DATENAME(MM, GETDATE());
 SELECT DATENAME(DD, GETDATE());
 SELECT DATENAME(WEEKDAY, GETDATE());
+
+SELECT FORMAT(GETDATE(), 'yy');
+SELECT FORMAT(GETDATE(), 'YY'); --Incorrect format
+SELECT FORMAT(GETDATE(), 'yyyy');
+SELECT FORMAT(GETDATE(), 'dd');
+SELECT FORMAT(GETDATE(), 'ddd');
+SELECT FORMAT(GETDATE(), 'mm'); --Minutes
+SELECT FORMAT(GETDATE(), 'MM'); --Month
+SELECT FORMAT(GETDATE(), 'MMM'); --Month
+SELECT FORMAT(GETDATE(), 'MMMM'); --Month
+SELECT FORMAT(GETDATE(), 'hh'); --hour
+SELECT FORMAT(SYSUTCDATETIME(), 'yyyy-MM-dd hh:mm:ss');
+SELECT GETUTCDATE() AT TIME ZONE 'India Standard Time' AS india_time;
+
+SELECT DATEADD(YEAR, 1, GETDATE())
+SELECT DATEADD(MM,1,GETDATE())
+SELECT DATEADD(YEAR,-3, GETDATE())
+SELECT DATEDIFF(YEAR,DATEFROMPARTS(2010,1,1),GETDATE())
+SELECT EOMONTH(GETDATE(),0)
+SELECT EOMONTH(GETDATE(),1)
+SELECT EOMONTH(GETDATE(),-1)
+
+-- Data types
+/* Exact numeric data types
+bigint  8 bytes
+int     4 bytes
+smallint 2 bytes
+tinyint 1 byte ( 0 to 255)
+*/
+
+/* Approximte numeric data types
+float
+real
+money
+smalmoney
+decimal
+numeric
+*/
+
+/* Date data types
+date
+datetime
+datetime2
+smalldatetime
+time
+*/
+
+/*
+Unique Indentifier (GUID)
+*/
+
+CREATE TABLE tblEmployees(
+    Employeeid uniqueidentifier default NEWID(),
+    Empname varchar(100)
+);
+insert into tblEmployees(Employeeid,Empname) values (newid(),'john');
+insert into tblEmployees(Empname) values  ('john');
+SELECT * FROM tblEmployees;
+-- DROP TABLE tblEmployees;
+
+/*
+Bit
+*/
+CREATE TABLE tblemps(
+    empid int,
+    empname VARCHAR(100),
+    isactive bit
+);
+insert into tblemps(empid, empname, isactive)values(1,'yusuf', 1);
+insert into tblemps(empid, empname, isactive)values(2, 'sam', 0);
+insert into tblemps(empid, empname, isactive)values(3,'yusuf', 'True');
+insert into tblemps(empid, empname, isactive)values(4, 'sam', 'False');
+select * from tblemps;
+
+-- Data type conversion
+SELECT 10 + 20;
+SELECT '10' + '20';
+--- implicit conversion
+SELECT '10' + 20;
+SELECT 10 + '20';
+--- Explicit conversion
+SELECT CAST('20' AS INT);
+SELECT CAST(LISTPRICE AS MONEY) FROM dimproduct;
+SELECT CONVERT(INT, '20');
+SELECT CONVERT(MONEY, listprice) FROM dimproduct;
+
+--Joins
+--- Inner join, left join and right join
+--- left anti join, right anti join
+--- left join and left outer join are same similar for right and right outer join
+--- Full outer join is combination of left inner and right parts
+
+SELECT c.firstname, p.englishproductname, f.salesamount
+FROM dimproduct AS p JOIN factinternetsales AS f ON p.productkey = f.productkey
+JOIN dimcustomer AS c ON c.customerkey = f.customerkey;
+
+SELECT 'P-' + format(ProductKey, '0000') AS productid, Englishproductname into dimproducts from dimproduct;
+SELECT * FROM dimproducts;
+SELECT p.productid, p.englishproductname, f.salesamount FROM dimproducts p JOIN factinternetsales f ON Right(p.productid,4) = f.productkey;
